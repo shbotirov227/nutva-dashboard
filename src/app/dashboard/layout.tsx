@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import Sidebar from "@/components/Sidebar";
 import Navbar from "@/components/Navbar";
 import { authOptions } from "@/lib/auth";
+import { UserType } from "@/lib/types";
 
 export default async function DashboardLayout({
   children,
@@ -16,8 +17,10 @@ export default async function DashboardLayout({
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex-1 flex flex-col">
-        <Navbar />
-        <main className="p-6">{children}</main>
+        <Navbar user={session.user as UserType} />
+        <main className="p-5">
+          {children}
+        </main>
       </div>
     </div>
   );

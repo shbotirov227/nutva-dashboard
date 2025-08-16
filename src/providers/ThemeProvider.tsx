@@ -1,4 +1,5 @@
 "use client";
+
 import { Attribute, ThemeProvider as NextThemesProvider } from "next-themes";
 import { ReactNode } from "react";
 

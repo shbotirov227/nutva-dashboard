@@ -16,7 +16,7 @@ export default function ProfilePage() {
       </CardHeader>
       <CardContent className="space-y-4">
         <Avatar className="h-24 w-24 mx-auto">
-          <AvatarImage src={session?.user?.image || "/default-user.png"} alt="User" />
+          <AvatarImage src={session?.user?.image || "/default-user.webp"} alt="User" />
           <AvatarFallback><User size={35} /></AvatarFallback>
         </Avatar>
         <div>

@@ -2,6 +2,17 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "nutva.uz",
+        port: "",
+        pathname: "/uploads/**",
+      },
+    ],
+  },
+
   async rewrites() {
     return [
       {

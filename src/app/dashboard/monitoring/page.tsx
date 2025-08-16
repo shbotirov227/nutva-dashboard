@@ -3,17 +3,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SalesChart } from "@/components/charts/SalesChart";
 import { VisitorsChart } from "@/components/charts/VisitorsChart";
-import { fetchSalesData, fetchVisitorsData } from "@/lib/api";
+import { getSalesData, getVisitorsData } from "@/lib/api";
 
 export default function MonitoringPage() {
   const { data: salesData = [], isLoading: salesLoading } = useQuery({
     queryKey: ["sales"],
-    queryFn: fetchSalesData,
+    queryFn: getSalesData,
   });
 
   const { data: visitorsData = [], isLoading: visitorsLoading } = useQuery({
     queryKey: ["visitors"],
-    queryFn: fetchVisitorsData,
+    queryFn: getVisitorsData,
   });
 
   if (salesLoading || visitorsLoading) return <div>Yuklanmoqda...</div>;

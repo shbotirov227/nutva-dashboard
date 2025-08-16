@@ -1,15 +1,16 @@
 "use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Package, FileText, BarChart2, User } from "lucide-react";
+import { Package, FileText, BarChart2, User } from "lucide-react";
 import Link from "next/link";
-import { fetchDashboardStats } from "@/lib/api";
+import { getPurchaseRequests } from "@/lib/api";
 
 export default function DashboardPage() {
   const { data: stats, isLoading, error } = useQuery({
-    queryKey: ["dashboardStats"],
-    queryFn: async () => await fetchDashboardStats(),
+    queryKey: ["purchase-requests"],
+    queryFn: async () => await getPurchaseRequests(),
   });
 
   if (isLoading) return <div className="flex items-center justify-center min-h-screen">Yuklanmoqda...</div>;

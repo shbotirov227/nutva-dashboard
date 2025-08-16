@@ -1,119 +1,74 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { fetchProductById, updateProduct } from "@/lib/api";
-import type { Product } from "@/lib/types";
+import { useParams, useRouter } from "next/navigation";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import ProductForm from "@/components/ProductForm";
+import { getProductById, updateProduct } from "@/lib/api";
+import { ProductFormType } from "@/lib/types";
 
-export default function EditProduct() {
+export default function CreateProductPage() {
   const router = useRouter();
-  const { id } = useParams();
   const queryClient = useQueryClient();
+  const params = useParams();
 
-  const { data: product, isLoading, error } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => fetchProductById(id as string),
+  const { data: productData, isLoading: isProductLoading } = useQuery({
+    queryKey: ["product", params.id],
+    queryFn: () => getProductById(params.id as string),
   });
-
-  const [form, setForm] = useState({
-    name: "",
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
-  });
-
-  useEffect(() => {
-    if (product) {
-      setForm({
-        name: product.name,
-        metaTitle: product.metaTitle,
-        metaDescription: product.metaDescription,
-        metaKeywords: product.metaKeywords,
-      });
-    }
-  }, [product]);
 
   const mutation = useMutation({
-    mutationFn: (data: Partial<Product>) => updateProduct(id as string, data),
+    mutationFn: async (values: ProductFormType) => {
+      const formData = new FormData();
+      
+      formData.append("En.Name", values.En.Name);
+      formData.append("En.Description", values.En.Description);
+      formData.append("En.MetaTitle", values.En.MetaTitle);
+      formData.append("En.MetaDescription", values.En.MetaDescription);
+      formData.append("En.MetaKeywords", values.En.MetaKeywords);
+      formData.append("En.Slug", values.En.Slug);
+
+      formData.append("Uz.Name", values.Uz.Name);
+      formData.append("Uz.Description", values.Uz.Description);
+      formData.append("Uz.MetaTitle", values.Uz.MetaTitle);
+      formData.append("Uz.MetaDescription", values.Uz.MetaDescription);
+      formData.append("Uz.MetaKeywords", values.Uz.MetaKeywords);
+      formData.append("Uz.Slug", values.Uz.Slug);
+
+      formData.append("Ru.Name", values.Ru.Name);
+      formData.append("Ru.Description", values.Ru.Description);
+      formData.append("Ru.MetaTitle", values.Ru.MetaTitle);
+      formData.append("Ru.MetaDescription", values.Ru.MetaDescription);
+      formData.append("Ru.MetaKeywords", values.Ru.MetaKeywords);
+      formData.append("Ru.Slug", values.Ru.Slug);
+
+      formData.append("Price", values.Price?.toString() || "");
+
+      values.ImageUrls.forEach((file, i) => {
+        formData.append(`Images[${i}]`, file);
+      });
+
+      return updateProduct(params.id as string, formData);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       router.push("/dashboard/products");
+      toast.success("Mahsulot muvaffaqiyatli tahrirlandi", {
+        position: "top-center",
+        autoClose: 1500,
+      });
     },
     onError: (error) => {
-      alert(`Xatolik: ${(error as Error).message}`);
+      toast.error(`Xatolik: ${(error as Error).message}`);
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate(form);
-  };
-
-  if (isLoading) return <div className="flex items-center justify-center min-h-screen">Yuklanmoqda...</div>;
-  if (error) return <div className="flex items-center justify-center min-h-screen">Xatolik: {(error as Error).message}</div>;
+  if (isProductLoading) return <p>Loading...</p>;
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Mahsulotni tahrirlash</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium">
-              Mahsulot nomi
-            </label>
-            <Input
-              id="name"
-              placeholder="Mahsulot nomi"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="metaTitle" className="block text-sm font-medium">
-              Meta sarlavha
-            </label>
-            <Input
-              id="metaTitle"
-              placeholder="Meta sarlavha"
-              value={form.metaTitle}
-              onChange={(e) => setForm({ ...form, metaTitle: e.target.value })}
-            />
-          </div>
-          <div>
-            <label htmlFor="metaDescription" className="block text-sm font-medium">
-              Meta tasnif
-            </label>
-            <Textarea
-              id="metaDescription"
-              placeholder="Meta tasnif"
-              value={form.metaDescription}
-              onChange={(e) => setForm({ ...form, metaDescription: e.target.value })}
-            />
-          </div>
-          <div>
-            <label htmlFor="metaKeywords" className="block text-sm font-medium">
-              Meta kalit so'zlar
-            </label>
-            <Input
-              id="metaKeywords"
-              placeholder="Meta kalit so'zlar"
-              value={form.metaKeywords}
-              onChange={(e) => setForm({ ...form, metaKeywords: e.target.value })}
-            />
-          </div>
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? "Yuklanmoqda..." : "Saqlash"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <ProductForm
+      initialData={productData}
+      onSubmit={(data) => mutation.mutate(data)}
+      loading={mutation.isPending}
+    />
   );
 }
