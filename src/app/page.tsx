@@ -1,11 +1,12 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
-import { useEffect } from "react";
+
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LayoutDashboard } from "lucide-react";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
@@ -34,10 +35,10 @@ export default function HomePage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
-            Bu admin paneli mahsulotlar, bloglar va sayt tashriflarini boshqarish uchun mo'ljallangan. Tizimga kirish uchun quyidagi tugmani bosing.
+            Bu admin paneli Nutva savdo xizmatini boshqarish uchun mo'ljallangan. Tizimga kirish uchun quyidagi tugmani bosing.
           </p>
           <Button asChild className="w-full">
-            <a href="/login">Tizimga kirish</a>
+            <Link href="/login">Tizimga kirish</Link>
           </Button>
         </CardContent>
       </Card>

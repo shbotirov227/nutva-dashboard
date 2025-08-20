@@ -21,7 +21,7 @@ api.interceptors.request.use(async (config) => {
 
 export default api;
 
-export const getProducts = async () => {
+export const getAllProducts = async () => {
   const response = await api.get("/Product");
   return response.data;
 };
@@ -51,6 +51,38 @@ export const updateProduct = async (id: string, data: FormData) => {
 
 export const deleteProduct = async (id: string) => {
   await api.delete(`/Product/${id}`);
+};
+
+export const getAllBanners = async () => {
+  const response = await api.get("/Banner");
+  return response.data;
+};
+
+export const getBannerById = async (id: string) => {
+  const response = await api.get(`/Banner/${id}`);
+  return response.data;
+};
+
+export const createBanner = async (data: FormData) => {
+  const response = await api.post("/Banner", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const updateBanner = async (id: string, data: FormData) => {
+  const response = await api.put(`/Banner/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const deleteBanner = async (id: string) => {
+  await api.delete(`/Banner/${id}`);
 };
 
 export const getAllBlogs = async () => {
@@ -96,12 +128,12 @@ export const getVisitorsData = async () => {
 };
 
 export const getPurchaseRequests = async () => {
-  const response = await api.get("/statisticts/purchase-requests");
+  const response = await api.get("/statistics/purchase-requests");
   return response.data;
 };
 
 export const getVisits = async () => {
-  const response = await api.get("/statisticts/visits");
+  const response = await api.get("/statistics/visits");
   return response.data;
 };
 

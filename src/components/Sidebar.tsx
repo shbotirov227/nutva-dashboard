@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutDashboard, Package, FileText, BarChart2, User, LogOut, ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
+import { LayoutDashboard, Package, Image, FileText, BarChart2, User, LogOut, ArrowLeftToLine, ArrowRightToLine } from "lucide-react";
 import { Button } from "./ui/button";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
@@ -12,11 +12,12 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   const navItems = [
-    { name: "Dashboard", href: "/dashboard", icon: <LayoutDashboard /> },
-    { name: "Products", href: "/dashboard/products", icon: <Package /> },
+    { name: "Asosiy sahifa", href: "/dashboard", icon: <LayoutDashboard /> },
+    { name: "Banner", href: "/dashboard/banner", icon: <Image /> },
+    { name: "Mahsulotlar", href: "/dashboard/products", icon: <Package /> },
     { name: "Blog", href: "/dashboard/blog", icon: <FileText /> },
     { name: "Monitoring", href: "/dashboard/monitoring", icon: <BarChart2 /> },
-    { name: "Profile", href: "/dashboard/profile", icon: <User /> },
+    { name: "Profil", href: "/dashboard/profile", icon: <User /> },
   ];
 
   const toggleCollapse = () => {
@@ -29,7 +30,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`${isCollapsed ? "w-16" : "w-64"
+      className={`${isCollapsed ? "w-20" : "w-64"
         } border-r transition-all duration-300 ease-in-out p-4 h-screen sticky top-0 left-0`}
     >
       <Button
@@ -47,7 +48,9 @@ export default function Sidebar() {
             className={`flex items-center space-x-2 p-2 rounded transition-all ${isCollapsed ? "justify-center space-x-0" : ""
               } ${isActive(item.href) ? "bg-[#e3e3e3] text-accent-foreground dark:bg-accent" : "hover:bg-accent"}`}
           >
-            {item.icon}
+            <span className="flex-shrink-0">
+              {item.icon}
+            </span>
             {!isCollapsed && <span>{item.name}</span>}
           </Link>
         ))}
@@ -57,7 +60,7 @@ export default function Sidebar() {
           onClick={async () => await signOut()}
         >
           <LogOut />
-          {!isCollapsed && <span className="ml-2">Logout</span>}
+          {!isCollapsed && <span className="ml-2">Akkauntdan chiqish</span>}
         </Button>
       </nav>
     </aside>

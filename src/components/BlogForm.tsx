@@ -1,16 +1,15 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  ArrowLeft, 
-  Save, 
-  Eye, 
-  EyeOff, 
-  Upload, 
-  X, 
+import {
+  ArrowLeft,
+  Save,
+  Eye,
+  EyeOff,
+  Upload,
+  X,
   ImageIcon,
   Video,
   Globe,
@@ -41,13 +40,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
+import { getLanguageFlag } from "@/lib/getLanguageFlag";
+import { LANGS } from "@/lib/types";
 
-export default function BlogForm({ 
-  initialData = null, 
+export default function BlogForm({
+  initialData = null,
   isEdit = false,
   onSubmit,
   onDelete = null,
-  isLoading = false 
+  isLoading = false
 }) {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -59,21 +60,21 @@ export default function BlogForm({
     VideoFiles: [],
     ImageUrls: initialData?.ImageUrls || [],
     VideoUrls: initialData?.VideoUrls || [],
-    // English fields
+
     "En.Title": initialData?.["En.Title"] || "",
     "En.Subtitle": initialData?.["En.Subtitle"] || "",
     "En.Content": initialData?.["En.Content"] || "",
     "En.MetaTitle": initialData?.["En.MetaTitle"] || "",
     "En.MetaDescription": initialData?.["En.MetaDescription"] || "",
     "En.MetaKeywords": initialData?.["En.MetaKeywords"] || "",
-    // Uzbek fields
+
     "Uz.Title": initialData?.["Uz.Title"] || "",
     "Uz.Subtitle": initialData?.["Uz.Subtitle"] || "",
     "Uz.Content": initialData?.["Uz.Content"] || "",
     "Uz.MetaTitle": initialData?.["Uz.MetaTitle"] || "",
     "Uz.MetaDescription": initialData?.["Uz.MetaDescription"] || "",
     "Uz.MetaKeywords": initialData?.["Uz.MetaKeywords"] || "",
-    // Russian fields
+
     "Ru.Title": initialData?.["Ru.Title"] || "",
     "Ru.Subtitle": initialData?.["Ru.Subtitle"] || "",
     "Ru.Content": initialData?.["Ru.Content"] || "",
@@ -92,10 +93,9 @@ export default function BlogForm({
     }));
   }, []);
 
-  // Handle media upload
   const handleMediaUpload = useCallback((event) => {
     const files = Array.from(event.target.files);
-    
+
     const imageFiles = files.filter(file => file.type.startsWith('image/'));
     const videoFiles = files.filter(file => file.type.startsWith('video/'));
 
@@ -106,7 +106,6 @@ export default function BlogForm({
     }));
   }, []);
 
-  // Remove media item
   const removeMedia = useCallback((index, type) => {
     const field = type === 'image' ? 'ImageFiles' : 'VideoFiles';
     setFormData(prev => ({
@@ -123,13 +122,12 @@ export default function BlogForm({
     }));
   }, []);
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     const requiredUzFields = ['Uz.Title', 'Uz.Subtitle', 'Uz.Content'];
-    const hasUzContent = requiredUzFields.every(field => (formData[field] as keyof as typeof formData).trim());
-    
+    const hasUzContent = requiredUzFields.every(field => (formData[field] as keyof formData).trim());
+
     if (!hasUzContent) {
       toast.error("Kamida O'zbek tilida barcha majburiy maydonlarni to'ldiring");
       return;
@@ -143,7 +141,6 @@ export default function BlogForm({
     }
   };
 
-  // Language completion percentage
   const getCompletionPercentage = (lang) => {
     const fields = [`${lang}.Title`, `${lang}.Subtitle`, `${lang}.Content`];
     const completed = fields.filter(field => formData[field].trim()).length;
@@ -151,20 +148,20 @@ export default function BlogForm({
   };
 
   const languages = [
-    { key: 'Uz', label: 'O\'zbekcha', flag: '🇺🇿' },
-    { key: 'En', label: 'English', flag: '🇺🇸' },
-    { key: 'Ru', label: 'Русский', flag: '🇷🇺' },
+    { key: "Uz", label: "O\'zbekcha", flag: LANGS.Uz },
+    { key: "En", label: "English", flag: LANGS.En },
+    { key: "Ru", label: "Русский", flag: LANGS.Ru },
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => router.back()}
-            className="gap-2"
+            className="gap-2 cursor-pointer"
           >
             <ArrowLeft className="h-4 w-4" />
             Orqaga
@@ -186,20 +183,21 @@ export default function BlogForm({
             variant="outline"
             size="sm"
             onClick={() => setShowPreview(!showPreview)}
-            className="gap-2"
+            className="gap-2 cursor-pointer"
           >
             {showPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             {showPreview ? 'Tahrirlash' : 'Ko\'rish'}
           </Button>
-          
+
           <div className="flex items-center gap-2">
-            <Label htmlFor="published" className="text-sm font-medium">
+            <Label htmlFor="published" className="text-sm font-medium cursor-pointer">
               Nashr qilish
             </Label>
             <Switch
               id="published"
               checked={formData.Published}
               onCheckedChange={(checked) => handleInputChange('Published', checked)}
+              className="cursor-pointer"
             />
           </div>
         </div>
@@ -219,6 +217,7 @@ export default function BlogForm({
                 <Card key={key} className="p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-lg">{flag}</span>
+
                     <h3 className="font-semibold">{label}</h3>
                     <Badge variant="outline" className="ml-auto">
                       {getCompletionPercentage(key)}%
@@ -242,7 +241,7 @@ export default function BlogForm({
                 </Card>
               ))}
             </div>
-            
+
             {(formData.ImageFiles.length > 0 || formData.VideoFiles.length > 0 || formData.ImageUrls.length > 0 || formData.VideoUrls.length > 0) && (
               <div>
                 <h3 className="font-semibold mb-3">Media fayllar</h3>
@@ -347,7 +346,7 @@ export default function BlogForm({
                                 type="button"
                                 variant="destructive"
                                 size="sm"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => removeMedia(index, 'image')}
                               >
                                 <X className="h-3 w-3" />
@@ -374,7 +373,7 @@ export default function BlogForm({
                                 type="button"
                                 variant="destructive"
                                 size="sm"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => removeMedia(index, 'video')}
                               >
                                 <X className="h-3 w-3" />
@@ -403,7 +402,7 @@ export default function BlogForm({
                                 type="button"
                                 variant="destructive"
                                 size="sm"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => removeMediaUrl(index, 'image')}
                               >
                                 <X className="h-3 w-3" />
@@ -431,7 +430,7 @@ export default function BlogForm({
                                 type="button"
                                 variant="destructive"
                                 size="sm"
-                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                 onClick={() => removeMediaUrl(index, 'video')}
                               >
                                 <X className="h-3 w-3" />
@@ -459,8 +458,15 @@ export default function BlogForm({
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-3">
                   {languages.map(({ key, label, flag }) => (
-                    <TabsTrigger key={key} value={key} className="gap-2">
-                      <span>{flag}</span>
+                    <TabsTrigger key={key} value={key} className="gap-2 cursor-pointer">
+                      {/* <span>{flag}</span> */}
+                      <Image
+                        src={getLanguageFlag(flag)}
+                        alt={`Flag of ${label}`}
+                        width={20}
+                        height={20}
+                        className="inline-block mr-1"
+                      />
                       <span>{label}</span>
                       <Badge variant="outline" className="ml-2">
                         {getCompletionPercentage(key)}%
@@ -575,8 +581,8 @@ export default function BlogForm({
             <div>
               {isEdit && onDelete && (
                 <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" type="button">
+                  <AlertDialogTrigger asChild className="cursor-pointer">
+                    <Button variant="destructive" type="button" className="min-w-[120px]">
                       Blogni o'chirish
                     </Button>
                   </AlertDialogTrigger>
@@ -588,10 +594,10 @@ export default function BlogForm({
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Bekor qilish</AlertDialogCancel>
+                      <AlertDialogCancel className="min-w-[120px] cursor-pointer">Bekor qilish</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={onDelete}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        className="min-w-[120px] bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                       >
                         O'chirish
                       </AlertDialogAction>
@@ -606,13 +612,14 @@ export default function BlogForm({
                 type="button"
                 variant="outline"
                 onClick={() => router.back()}
+                className="min-w-[120px] cursor-pointer"
               >
                 Bekor qilish
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={isLoading}
-                className="gap-2 min-w-[120px]"
+                className="gap-2 min-w-[120px] cursor-pointer"
               >
                 {isLoading ? (
                   <>

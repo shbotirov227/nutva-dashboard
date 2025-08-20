@@ -1,29 +1,11 @@
 "use client";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { AgCharts } from "ag-charts-react";
+import { formatDate } from "@/lib/formatDate";
 
 interface VisitorsData {
   date: string;
-  count: number;
+  totalVisits: number;
 }
 
 interface VisitorsChartProps {
@@ -31,52 +13,82 @@ interface VisitorsChartProps {
 }
 
 export function VisitorsChart({ data }: VisitorsChartProps) {
-  const chartData = {
-    labels: data.map((item) => item.date),
-    datasets: [
-      {
-        label: "Tashriflar",
-        data: data.map((item) => item.count),
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        tension: 0.3,
-        fill: true,
-      },
-    ],
-  };
+  const chartData = data.map((item) => ({
+    date: formatDate(item.date),
+    totalVisits: item.totalVisits,
+  }));
 
   const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top" as const,
-        labels: {
-          color: "hsl(var(--foreground))",
+    data: chartData,
+    theme: "ag-default",
+    title: { text: "Tashriflar grafigi" },
+    series: [
+      {
+        type: "area",
+        xKey: "date",
+        yKey: "totalVisits",
+        yName: "Tashriflar",
+        // fill: "rgba(255, 99, 132, 0.2)",
+        stroke: "#2c6ed5",
+        fill: {
+          type: "gradient",
+          colorStops: [
+            // { color: "#ffffff", stop: 0 },
+            { color: "#7da9e8", stop: 0.2 },
+            { color: "#2c6ed5", stop: 1 },
+          ],
+        },
+        strokeWidth: 1,
+        cornerRadius: 3,
+        marker: {
+          enabled: true,
+          stroke: "#fff",
+          strokeWidth: 2,
+          size: 7,
+          shape: "circle",
+          fill: "#2c6ed5",
+        },
+        tooltip: {
+          renderer: ({ datum }: { datum: VisitorsData }) => {
+            return {
+              content: `<b>${formatDate(datum.date)}</b><br/>Tashriflar: ${datum.totalVisits}`,
+            };
+          },
+          enabled: true,
+          format: "Tashriflar: {totalVisits}",
+          valueFormatter: ({ value }: { value: number }) => `${value}`,
+        },
+        highlightStyle: {
+          item: {
+            fill: "#2c6ed5",
+            stroke: "#2c6ed5",
+          },
+        },
+        label: {
+          enabled: false,
+          formatter: ({ value }: { value: number }) => `${value}`,
         },
       },
-      title: {
-        display: true,
-        text: "Tashriflar grafigi",
-        color: "hsl(var(--foreground))",
+    ],
+    axis: [
+      {
+        type: "time",
+        position: "bottom",
+        label: { format: "%d.%m.%Y" },
+        tick: { size: 0 },
       },
-    },
-    scales: {
-      x: {
-        ticks: {
-          color: "hsl(var(--foreground))",
-        },
+      {
+        type: "number",
+        position: "left",
+        nice: true,
       },
-      y: {
-        ticks: {
-          color: "hsl(var(--foreground))",
-        },
-      },
-    },
+    ],
+    legend: false,
   };
 
   return (
-    <div className="w-full h-[400px]">
-      <Line data={chartData} options={options} />
+    <div className="w-full h-[500px]">
+      <AgCharts className="h-full w-full" options={options} />
     </div>
   );
 }

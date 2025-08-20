@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  transpilePackages: ["ag-charts-react", "ag-charts-community"],
   images: {
     remotePatterns: [
       {

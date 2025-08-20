@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import Link from "next/link";
@@ -41,6 +40,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { formatDate } from "@/lib/formatDate";
 
 export default function BlogPage() {
   const queryClient = useQueryClient();
@@ -119,19 +119,19 @@ export default function BlogPage() {
     );
   });
 
-  const splitMedia = (media) => {
-    const images = media?.filter(item => item.mediaType === "Image") || [];
-    const videos = media?.filter(item => item.mediaType === "Video") || [];
+  const splitMedia = (media: any) => {
+    const images = media?.filter((item: any) => item.mediaType === "Image") || [];
+    const videos = media?.filter((item: any) => item.mediaType === "Video") || [];
     return { images, videos };
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('uz-UZ', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  // const formatDate = (dateString: string) => {
+  //   return new Date(dateString).toLocaleDateString('uz-UZ', {
+  //     year: 'numeric',
+  //     month: 'short',
+  //     day: 'numeric'
+  //   });
+  // };
 
   if (!groupedBlogs.length) {
     return (
@@ -205,7 +205,7 @@ export default function BlogPage() {
 
       {/* Blog Grid */}
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {filteredBlogs.map((blog) => {
+        {filteredBlogs.map((blog: any) => {
           const { images, videos } = splitMedia(blog.media);
           const primaryImage = images[0];
           const viewCount = blog.uz?.viewCount || blog.en?.viewCount || blog.ru?.viewCount || 0;

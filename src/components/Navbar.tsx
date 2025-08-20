@@ -39,7 +39,7 @@ export default function Navbar({ user }: { user?: UserType }) {
             </Avatar>
           </Link>
           <span className="text-sm">{user?.email || "Foydalanuvchi"}</span>
-          <Button variant="outline" size="sm" onClick={handleLogout}>
+          <Button className="cursor-pointer" variant="outline" size="sm" onClick={handleLogout}>
             Chiqish
           </Button>
         </div>

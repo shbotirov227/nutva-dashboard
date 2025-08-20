@@ -1,5 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+export enum LANGS {
+  Uz = "Uz",
+  Ru = "Ru",
+  En = "En",
+}
+
+export interface BannerLang {
+  Title: string;
+  Subtitle: string;
+  MetaTitle: string;
+  MetaDescription: string;
+  MetaKeywords: string;
+}
+
+export interface BannerFormType {
+  Link: string;
+  ImageUrls: string[];
+  [LANGS.Uz]: BannerLang;
+  [LANGS.Ru]: BannerLang;
+  [LANGS.En]: BannerLang;
+}
+
+export interface ProductLang {
+  Name: string;
+  Description: string;
+  MetaTitle: string;
+  MetaDescription: string;
+  MetaKeywords: string;
+  Slug: string;
+}
+
+export interface ProductFormType {
+  Price: number | null;
+  ImageUrls: File[] | string[];
+  [LANGS.Uz]: ProductLang;
+  [LANGS.Ru]: ProductLang;
+  [LANGS.En]: ProductLang;
+}
+
 export type LanguageFields = {
   name: string;
   description: string;
@@ -10,7 +49,7 @@ export type LanguageFields = {
 };
 
 export interface Product {
-  id: string | undefined;
+  id?: string;
   price: number | null;
   imageUrls: string[];
   imageWidth?: number;
@@ -27,53 +66,63 @@ export interface Product {
   [key: string]: any;
 }
 
-export type ProductFormType = {
-  Uz: {
-    Name: string;
-    Description: string;
-    MetaTitle: string;
-    MetaDescription: string;
-    MetaKeywords: string;
-    Slug: string;
-  },
-  Ru: {
-    Name: string;
-    Description: string;
-    MetaTitle: string;
-    MetaDescription: string;
-    MetaKeywords: string;
-    Slug: string;
-  },
-  En: {
-    Name: string;
-    Description: string;
-    MetaTitle: string;
-    MetaDescription: string;
-    MetaKeywords: string;
-    Slug: string;
-  },
-  // nameUz: string;
-  // nameRu: string;
-  // nameEn: string;
-  // descriptionUz: string;
-  // descriptionRu: string;
-  // descriptionEn: string;
-  Price: number | null;
-  // slugUz: string;
-  // slugRu: string;
-  // slugEn: string;
-  // metaTitleUz: string;
-  // metaTitleRu: string;
-  // metaTitleEn: string;
-  // metaDescriptionUz: string;
-  // metaDescriptionRu: string;
-  // metaDescriptionEn: string;
-  // metaKeywordsUz: string;
-  // metaKeywordsRu: string;
-  // metaKeywordsEn: string;
-  ImageUrls: string[];
-  token?: string
-};
+// type ProductFormType = {
+//   Price: number | null;
+//   ImageUrls: (string | File)[];
+//   Uz: { Name: string; Description: string; MetaTitle: string; MetaDescription: string; MetaKeywords: string; Slug: string };
+//   Ru: { Name: string; Description: string; MetaTitle: string; MetaDescription: string; MetaKeywords: string; Slug: string };
+//   En: { Name: string; Description: string; MetaTitle: string; MetaDescription: string; MetaKeywords: string; Slug: string };
+// };
+
+
+
+// export type ProductFormType = {
+//   Uz: {
+//     Name: string;
+//     Description: string;
+//     MetaTitle: string;
+//     MetaDescription: string;
+//     MetaKeywords: string;
+//     Slug: string;
+//   },
+//   Ru: {
+//     Name: string;
+//     Description: string;
+//     MetaTitle: string;
+//     MetaDescription: string;
+//     MetaKeywords: string;
+//     Slug: string;
+//   },
+//   En: {
+//     Name: string;
+//     Description: string;
+//     MetaTitle: string;
+//     MetaDescription: string;
+//     MetaKeywords: string;
+//     Slug: string;
+//   },
+//   // nameUz: string;
+//   // nameRu: string;
+//   // nameEn: string;
+//   // descriptionUz: string;
+//   // descriptionRu: string;
+//   // descriptionEn: string;
+//   Price: number | null;
+//   // slugUz: string;
+//   // slugRu: string;
+//   // slugEn: string;
+//   // metaTitleUz: string;
+//   // metaTitleRu: string;
+//   // metaTitleEn: string;
+//   // metaDescriptionUz: string;
+//   // metaDescriptionRu: string;
+//   // metaDescriptionEn: string;
+//   // metaKeywordsUz: string;
+//   // metaKeywordsRu: string;
+//   // metaKeywordsEn: string;
+//   ImageUrls: string[];
+//   token?: string
+// };
 
 // export interface Blog {
 //   id: string;
@@ -102,6 +151,40 @@ export interface Blog {
   Published: boolean;
   ImageUrls?: string[];
   VideoUrls?: string[];
+}
+
+export interface BlogFormType {
+  En: LangFields;
+  Uz: LangFields;
+  Ru: LangFields;
+  ImageFiles?: File[];
+  VideoFiles?: File[];
+  Published: boolean;
+  ImageUrls?: string[];
+  VideoUrls?: string[];
+}
+
+export interface GetBlogsType {
+  id: string,
+  createdAt: string | Date,
+  updatedAt: string | Date,
+  published: boolean,
+  title: string,
+  subtitle: string,
+  content: string,
+  metaTitle: string,
+  metaDescription: string,
+  metaKeywords: string,
+  viewCount: number,
+  language: "uz" | "ru" | "en",
+
+  media: {
+    url: string,
+    file: File | null,
+    caption: null,
+    altText: null,
+    mediaType: "Image" | "Video" | "File"
+  }[]
 }
 
 export interface VisitorsData {

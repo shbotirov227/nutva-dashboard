@@ -1,39 +1,76 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { AgCharts } from "ag-charts-react";
 
-export function SalesChart({ data }: { data: any[] }) {
-  const chartData = {
-    labels: data.map((item) => item.date),
-    datasets: [
+interface Product {
+  productId: string;
+  quantity: number;
+}
+
+interface Sale {
+  buyerName: string;
+  phone: string;
+  region: string;
+  comment: string;
+  products: Product[];
+}
+
+export function SalesChart({ data }: { data: Sale[] }) {
+  const aggregated = data.reduce<Record<string, number>>((acc, sale) => {
+    const totalQuantity = sale.products.reduce((sum, p) => sum + p.quantity, 0);
+    acc[sale.region] = (acc[sale.region] || 0) + totalQuantity;
+    return acc;
+  }, {});
+
+  const chartData = Object.entries(aggregated).map(([region, total]) => ({
+    region,
+    total,
+  }));
+
+  const options = {
+    data: chartData,
+    title: { text: "Sotuvlar bo'yicha diagramma" },
+    series: [
       {
-        label: "Sales",
-        data: data.map((item) => item.amount),
-        borderColor: "rgb(75, 192, 192)",
-        tension: 0.1,
+        type: "area",
+        xKey: "region",
+        yKey: "total",
+        yName: "Mahsulotlar soni",
+        fill: "rgba(75,192,192,0.4)",
+        stroke: "rgb(75,192,192)",
+        strokeWidth: 1,
+        cornerRadius: 3,
+        marker: {
+          enabled: true,
+          stroke: "#fff",
+          strokeWidth: 2,
+          size: 7,
+          shape: "circle",
+          fill: "#2c6ed5",
+        },
       },
     ],
+    axes: [
+      {
+        type: "category",
+        position: "bottom",
+      },
+      {
+        type: "number",
+        position: "left",
+        nice: true,
+      },
+    ],
+    legend: { enabled: false },
   };
 
-  return <Line data={chartData} />;
+  return (
+    <div className="w-full h-[500px]">
+      <AgCharts
+        className="h-full w-full"
+        data={chartData}
+        options={options}
+      />
+    </div>
+  );
 }
