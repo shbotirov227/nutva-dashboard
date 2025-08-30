@@ -7,23 +7,27 @@ import { getBlogById, updateBlog, deleteBlog } from "@/lib/api";
 import { toast } from "react-toastify";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { Blog } from "@/lib/types";
 
 export default function EditBlogPage() {
   const router = useRouter();
   const params = useParams();
   const queryClient = useQueryClient();
-  const blogId = params.id;
+  const blogId = params.id as string;
 
   // Fetch blog data
-  const { data: rawBlogData, isLoading, error } = useQuery({
-    queryKey: ["blog", blogId],
+  const { data: rawBlogData = [], isLoading, error } = useQuery({
+    queryKey: ["blog", blogId as string],
     queryFn: () => getBlogById(blogId),
     enabled: !!blogId
   });
 
   // Update mutation
   const updateMutation = useMutation({
-    mutationFn: (data) => updateBlog(blogId, data),
+    mutationFn: async (data) => {
+      const response = await updateBlog(blogId as string, data);
+      return response;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       queryClient.invalidateQueries({ queryKey: ["blog", blogId] });
@@ -36,7 +40,7 @@ export default function EditBlogPage() {
 
   // Delete mutation
   const deleteMutation = useMutation({
-    mutationFn: () => deleteBlog(blogId),
+    mutationFn: () => deleteBlog(blogId as string),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogs"] });
       router.push("/dashboard/blog");
@@ -90,7 +94,7 @@ export default function EditBlogPage() {
   }
 
   const processedBlogData = rawBlogData ? (() => {
-    let data = {
+    const data = {
       id: blogId,
       Published: false,
       ImageFiles: [],
@@ -117,7 +121,7 @@ export default function EditBlogPage() {
       "Ru.MetaKeywords": "",
     };
 
-    if (rawBlogData.length > 0) {
+    if (Array.isArray(rawBlogData) && rawBlogData.length > 0) {
       // Common fields from first item
       data.id = rawBlogData[0].id || blogId;
       data.Published = rawBlogData[0].published || false;

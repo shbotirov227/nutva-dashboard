@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 
 export function splitMedia(media: any[]) {
   const images = media.filter((m) => m.mediaType === "Image");

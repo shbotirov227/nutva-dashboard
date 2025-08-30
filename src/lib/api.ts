@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Product } from "./types";
+import { Blog, Product } from "./types";
 import { getSession } from "next-auth/react";
 
 const api = axios.create({
@@ -86,16 +86,16 @@ export const deleteBanner = async (id: string) => {
 };
 
 export const getAllBlogs = async () => {
-  const response = await api.get("/BlogPost");
+  const response = await api.get<Blog>("/BlogPost");
   return response.data;
 };
 
-export const getBlogById = async (id: string) => {
+export const getBlogById = async (id: string): Promise<Blog> => {
   const response = await api.get(`/BlogPost/${id}`);
   return response.data;
 };
 
-export const createBlog = async (data: Product) => {
+export const createBlog = async (data: Blog[]) => {
   const response = await api.post("/BlogPost", data, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -104,7 +104,7 @@ export const createBlog = async (data: Product) => {
   return response.data;
 };
 
-export const updateBlog = async (id: string, data: Product) => {
+export const updateBlog = async (id: string, data: any): Promise<any[]> => {
   const response = await api.put(`/BlogPost/${id}`, data, {
     headers: {
       "Content-Type": "multipart/form-data",
