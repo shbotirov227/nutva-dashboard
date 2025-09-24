@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Blog, Product } from "./types";
+import { Blog, Product, PurchaseRequest } from "./types";
 import { getSession } from "next-auth/react";
 
 const api = axios.create({

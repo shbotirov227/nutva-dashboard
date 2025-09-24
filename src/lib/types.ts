@@ -200,3 +200,21 @@ export interface UserType {
   token?: string;
   accessToken?: string;
 }
+
+export interface PurchaseRequest {
+  id?: string;
+  buyerName: string;
+  phone: string;
+  region: string;
+  comment: string;
+  products: {
+    productId: string;
+    quantity: number;
+  }[];
+  createdAt?: string | Date;
+}
+
+export interface Visit {
+  date: string;
+  totalVisits: number;
+}

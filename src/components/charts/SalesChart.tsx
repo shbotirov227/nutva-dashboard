@@ -1,22 +1,33 @@
 "use client";
 
+import { customChartTheme } from "@/lib/chartTheme";
+import { PurchaseRequest } from "@/lib/types";
+import { AgCartesianChartOptions } from "ag-charts-community";
 import { AgCharts } from "ag-charts-react";
 
-interface Product {
-  productId: string;
-  quantity: number;
-}
+// interface Product {
+//   productId: string;
+//   quantity: number;
+// }
 
-interface Sale {
-  buyerName: string;
-  phone: string;
-  region: string;
-  comment: string;
-  products: Product[];
-}
+// interface Sale {
+//   buyerName: string;
+//   phone: string;
+//   region: string;
+//   comment: string;
+//   products: Product[];
+// }
 
-export function SalesChart({ data }: { data: Sale[] }) {
-  const aggregated = data.reduce<Record<string, number>>((acc, sale) => {
+export function SalesChart({ data }: { data: PurchaseRequest[] }) {
+
+  if (!data || data.length === 0) {
+    return <p>Ma'lumot yo'q</p>;
+  }
+
+  const safeData = Array.isArray(data) ? data : [];
+
+
+  const aggregated = safeData.reduce<Record<string, number>>((acc, sale) => {
     const totalQuantity = sale.products.reduce((sum, p) => sum + p.quantity, 0);
     acc[sale.region] = (acc[sale.region] || 0) + totalQuantity;
     return acc;
@@ -27,7 +38,7 @@ export function SalesChart({ data }: { data: Sale[] }) {
     total,
   }));
 
-  const options = {
+  const options: AgCartesianChartOptions = {
     data: chartData,
     title: { text: "Sotuvlar bo'yicha diagramma" },
     series: [
@@ -38,30 +49,13 @@ export function SalesChart({ data }: { data: Sale[] }) {
         yName: "Mahsulotlar soni",
         fill: "rgba(75,192,192,0.4)",
         stroke: "rgb(75,192,192)",
-        strokeWidth: 1,
-        cornerRadius: 3,
-        marker: {
-          enabled: true,
-          stroke: "#fff",
-          strokeWidth: 2,
-          size: 7,
-          shape: "circle",
-          fill: "#2c6ed5",
-        },
       },
     ],
     axes: [
-      {
-        type: "category",
-        position: "bottom",
-      },
-      {
-        type: "number",
-        position: "left",
-        nice: true,
-      },
+      { type: "category", position: "bottom" },
+      { type: "number", position: "left" },
     ],
-    legend: { enabled: false },
+    theme: customChartTheme,
   };
 
   return (

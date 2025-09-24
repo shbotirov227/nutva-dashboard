@@ -74,7 +74,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{visits?.length || 0}</p>
+            <p className="text-2xl font-semibold">{visits?.data?.length || 0}</p>
             <Link href="/dashboard/monitoring">
               <Button variant="link" className="mt-2 cursor-pointer">Batafsil</Button>
             </Link>
@@ -88,7 +88,7 @@ export default function DashboardPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-semibold">{purchaseRequests?.length || 0}</p>
+            <p className="text-2xl font-semibold">{purchaseRequests?.data?.length || 0}</p>
             <Link href="/dashboard/monitoring">
               <Button variant="link" className="mt-2 cursor-pointer">Batafsil</Button>
             </Link>

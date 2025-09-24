@@ -5,16 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SalesChart } from "@/components/charts/SalesChart";
 import { VisitorsChart } from "@/components/charts/VisitorsChart";
 import { getPurchaseRequests, getVisits } from "@/lib/api";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VisitorsFilter } from "@/components/VisitorsFilter";
 import { Skeleton } from "@/components/ui/skeleton";
 import QueryWrapper from "@/components/QueryWrapper";
+import { Visit } from "@/lib/types";
 
 export default function MonitoringPage() {
-  const [filteredVisits, setFilteredVisits] = useState<typeof visitsData>([]);
+  const [filteredVisits, setFilteredVisits] = useState<Visit[]>([]);
 
   const {
-    data: purchaseRequestsData = [],
+    data: purchaseRequestsResponse = [],
     isLoading: purchaseRequestsLoading,
     isError: purchaseRequestsError,
     error: purchaseRequestsErrorObj,
@@ -28,7 +29,7 @@ export default function MonitoringPage() {
   });
 
   const {
-    data: visitsData = [],
+    data: visitsResponse = [],
     isLoading: visitsLoading,
     isError: visitsError,
     error: visitsErrorObj,
@@ -41,13 +42,20 @@ export default function MonitoringPage() {
     refetchOnMount: false,
   });
 
+  const visitsData = useMemo(() => visitsResponse?.data ?? [], [visitsResponse?.data]);
+  const purchaseRequestsData = useMemo(() => purchaseRequestsResponse ?? [], [purchaseRequestsResponse]);
+
+  useEffect(() => {
+    console.log("visitsResponse", visitsResponse);
+  }, [visitsResponse]);
+
   useEffect(() => {
     if (visitsData.length > 0) {
       const now = new Date();
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(now.getDate() - 10);
 
-      const lastWeekData = visitsData.filter((item: { date: string | number | Date }) => {
+      const lastWeekData = visitsData?.filter((item: { date: string | number | Date }) => {
         const itemDate = new Date(item.date);
         return itemDate >= sevenDaysAgo && itemDate <= now;
       });
@@ -56,8 +64,11 @@ export default function MonitoringPage() {
     }
   }, [visitsData]);
 
-  const displayData = filteredVisits.length > 0 ? filteredVisits : visitsData;
-  const sortedDisplayData = [...displayData].sort(
+  const displayData = Array.isArray(filteredVisits) && filteredVisits.length > 0
+    ? filteredVisits
+    : (Array.isArray(visitsData) ? visitsData : []);
+  
+  const sortedDisplayData = [...displayData]?.sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
 
@@ -96,7 +107,7 @@ export default function MonitoringPage() {
               <Skeleton className="w-full h-full rounded-lg" />
             </div>
           ) : ( */}
-          <SalesChart data={purchaseRequestsData} />
+          <SalesChart data={purchaseRequestsData?.data} />
           {/* )} */}
         </CardContent>
       </Card>
